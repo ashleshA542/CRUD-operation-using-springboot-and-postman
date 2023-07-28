@@ -1,14 +1,11 @@
 package com.crudoperations.springbootproject.crudspringbootproject.controller;
 
 
-import com.crudoperations.springbootproject.crudspringbootproject.repository.StudentRepository;
 import com.crudoperations.springbootproject.crudspringbootproject.service.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.crudoperations.springbootproject.crudspringbootproject.entity.Student;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -82,41 +79,17 @@ return  new ResponseEntity<String>("Remove Sucessfully",HttpStatus.ACCEPTED);
         return new ResponseEntity<List<Student>>(studentList, HttpStatus.ACCEPTED);
     }
 
-    /*@GetMapping("/updatestudent/{id}")*/
-/*public ResponseEntity<String> updateStudent(@PathVariable int id){
 
-
-
-    studentService.updateStudent(id);
-    return new ResponseEntity<String>("updated successfully",HttpStatus.ACCEPTED);
-}
-
-
-
-}*/
-    /*public Student updateStudent(@RequestBody Student student){
-        studentService.updateStudent(student);
-        return student;
-    }*/
-
-
-/*
-@PutMapping("/updatestudent")
-    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
-        Student updatedStudent = studentService.updateStudent(student);
-        if (updatedStudent != null) {
-            // If the student is found and updated, return the updated student object
-            return ResponseEntity.ok(updatedStudent);
-        } else {
-            // If the student is not found, return a 404 Not Found response
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/updatestudentdata/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable int id,@RequestBody Student student) {
+        Student updatedStudent = studentService.updateStudent(id, student);
+        return ResponseEntity.ok(updatedStudent);
     }
-*/
-
-
-
 
 }
+
+
+
+
 
 

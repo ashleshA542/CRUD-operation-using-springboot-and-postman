@@ -17,7 +17,7 @@ public interface StudentService {
     public List<Student> getallStudent();
 
 
-
+public Student updateStudent(int id,Student student);
 
 
 }

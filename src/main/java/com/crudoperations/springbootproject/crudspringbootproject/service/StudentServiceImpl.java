@@ -1,10 +1,13 @@
 package com.crudoperations.springbootproject.crudspringbootproject.service;
 
 import com.crudoperations.springbootproject.crudspringbootproject.entity.Student;
+import com.crudoperations.springbootproject.crudspringbootproject.exception.ResourceNotFoundException;
 import com.crudoperations.springbootproject.crudspringbootproject.repository.StudentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,18 +62,27 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
+    @Override
+    public Student updateStudent(int id, Student student) {
+        {
+            Student existingStudent = studentRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Student with ID " + id + " not found."));
 
-   /* @Override
-    public Student updateStudent(Student student) {
+            BeanUtils.copyProperties(student, existingStudent);
 
-        Student std = studentRepository.save(student);
-        return std;
-    }
+           /* existingStudent.setName(student.getName());
+            existingStudent.setAge(student.getAge());
+            existingStudent.setId(student.getId());
 */
 
-
-
+            return studentRepository.save(existingStudent);
+        }
+    }
 }
+
+
+
+
 
 
 
