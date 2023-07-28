@@ -2,91 +2,121 @@ package com.crudoperations.springbootproject.crudspringbootproject.controller;
 
 
 import com.crudoperations.springbootproject.crudspringbootproject.repository.StudentRepository;
+import com.crudoperations.springbootproject.crudspringbootproject.service.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.crudoperations.springbootproject.crudspringbootproject.entity.Student;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api")  //optional
 public class StudentController {
 
+
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentServiceImpl studentService;
 
 
-    //create new record in database
-    @PostMapping("/savestudent")/* annotation that maps the method to handle HTTP POST requests with the specified endpoint "/savestudent".*/
-    public Student saveData(@RequestBody Student student)/*When a POST request is made to this endpoint,
-    the method saveData() will be executed.and this method takes Student object as input in request body
-    @RequestBody annotation tells Spring to deserialize the incoming JSON data from the request body into a Student object.*/ {
+    @PostMapping("/addstudent")
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        Student student1 = studentService.addStudent(student);
+        return new ResponseEntity<Student>(student1, HttpStatus.CREATED);
+    }
 
-        studentRepository.save(student); /*save() method is used to save or update the student object into the database.*/
+/*
+@DeleteMapping("/removestudent/{id}")
+public  ResponseEntity<String> removeStudent(@PathVariable int id){
+
+studentService.removeStudent(id);
+return  new ResponseEntity<String>("Remove Sucessfully",HttpStatus.ACCEPTED);
+}
+
+*/
+
+
+    @DeleteMapping("/removestudent/{id}")
+    public ResponseEntity<String> removeStudent(@PathVariable int id) {
+        // Attempt to remove the student with the given ID
+        String responseMessage = studentService.removeStudent(id);
+
+        // Check the response message to determine if the student was deleted successfully
+        if (responseMessage.equals("Deleted Successfully.")) {
+            // If the student is found and deleted, return a 202 Accepted response
+            return new ResponseEntity<>(responseMessage, HttpStatus.ACCEPTED);
+        } else {
+            // If the student is not found, return a 404 Not Found response
+            return new ResponseEntity<>(responseMessage, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @GetMapping("/findStudentById/{id}")
+    public ResponseEntity<Optional<Student>> findStudentById(@PathVariable Integer id) {
+
+        if (id == null) {
+            // Return a 400 Bad Request response if the id is null
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Optional<Student> student = studentService.findStudentById(id);
+
+        if (student.isPresent()) {
+            // If the student is found, return it with HTTP status 200 OK
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            // If the student is not found, return HTTP status 404 Not Found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @GetMapping("/allstudent")
+    public ResponseEntity<List<Student>> listofStudent() {
+        List<Student> studentList = studentService.getallStudent();
+        return new ResponseEntity<List<Student>>(studentList, HttpStatus.ACCEPTED);
+    }
+
+    /*@GetMapping("/updatestudent/{id}")*/
+/*public ResponseEntity<String> updateStudent(@PathVariable int id){
+
+
+
+    studentService.updateStudent(id);
+    return new ResponseEntity<String>("updated successfully",HttpStatus.ACCEPTED);
+}
+
+
+
+}*/
+    /*public Student updateStudent(@RequestBody Student student){
+        studentService.updateStudent(student);
         return student;
-    }
-
-    //fetch all the data from database
-    @GetMapping("/getallstudentindatabase")
-    public List<Student> getAll() {
-        List<Student> studentList = studentRepository.findAll();
-        return studentList;
-
-    }
-
-    /*@GetMapping("/getstudent/{id}")
-    public Student getstudentdata(@PathVariable int id) {
-        Optional<Student> student = studentRepository.findById(id);
-        Student student1 = student.get();
-        return student1;
+    }*/
 
 
+/*
+@PutMapping("/updatestudent")
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        Student updatedStudent = studentService.updateStudent(student);
+        if (updatedStudent != null) {
+            // If the student is found and updated, return the updated student object
+            return ResponseEntity.ok(updatedStudent);
+        } else {
+            // If the student is not found, return a 404 Not Found response
+            return ResponseEntity.notFound().build();
+        }
     }
 */
 
 
-    @GetMapping("/getstudent/{id}")
-    public ResponseEntity<Student> getstudentdata(@PathVariable Integer id) {
-        if (id == null) {
-            // Handle the case when id is null, return a bad request response
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        Optional<Student> student = studentRepository.findById(id);
-
-        if (student.isPresent()) {
-            Student existingStudent = student.get();
-            // Return the existingStudent
-            return ResponseEntity.ok(existingStudent);
-        } else {
-            // Handle the case when student with the specified id does not exist
-            // Return a not found response
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/updatestudentdatabase")
-    public Student updateStudent(@RequestBody Student student){
-        studentRepository.save(student);
-        return student;
-}
-
-
-
-
-//to delete particular record from database
-    @DeleteMapping("/deletestudent/{id}")
-    public String deletestudent(@PathVariable int id){
-        Student student =studentRepository.findById(id).get();
-        if(student!=null)
-            studentRepository.delete(student);
-        return "Deleted Successfully.";
-    }
-
-
-
 
 
 }
+
+
