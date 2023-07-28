@@ -1,11 +1,13 @@
 package com.crudoperations.springbootproject.crudspringbootproject.controller;
 
 
+import com.crudoperations.springbootproject.crudspringbootproject.exception.ResourceNotFoundException;
 import com.crudoperations.springbootproject.crudspringbootproject.service.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.crudoperations.springbootproject.crudspringbootproject.entity.Student;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,15 +28,6 @@ public class StudentController {
         return new ResponseEntity<Student>(student1, HttpStatus.CREATED);
     }
 
-/*
-@DeleteMapping("/removestudent/{id}")
-public  ResponseEntity<String> removeStudent(@PathVariable int id){
-
-studentService.removeStudent(id);
-return  new ResponseEntity<String>("Remove Sucessfully",HttpStatus.ACCEPTED);
-}
-
-*/
 
 
     @DeleteMapping("/removestudent/{id}")
@@ -85,6 +78,13 @@ return  new ResponseEntity<String>("Remove Sucessfully",HttpStatus.ACCEPTED);
         Student updatedStudent = studentService.updateStudent(id, student);
         return ResponseEntity.ok(updatedStudent);
     }
+
+
+
+
+
+
+
 
 }
 

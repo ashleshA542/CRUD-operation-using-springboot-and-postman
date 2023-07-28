@@ -5,9 +5,9 @@ import com.crudoperations.springbootproject.crudspringbootproject.exception.Reso
 import com.crudoperations.springbootproject.crudspringbootproject.repository.StudentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +17,15 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
 
 
-    @Autowired
+   /* @Autowired
 
-    private StudentRepository studentRepository;
+    private StudentRepository studentRepository;*/
 
+    private final StudentRepository studentRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public Student addStudent(Student student) {
@@ -66,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
     public Student updateStudent(int id, Student student) {
         {
             Student existingStudent = studentRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Student with ID " + id + " not found."));
+                    .orElseThrow(() -> new ResourceNotFoundException( id + " not found."));
 
             BeanUtils.copyProperties(student, existingStudent);
 
