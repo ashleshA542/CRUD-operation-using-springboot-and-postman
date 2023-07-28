@@ -71,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
     public Student updateStudent(int id, Student student) {
         {
             Student existingStudent = studentRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException( id + " not found."));
+                    .orElseThrow(() -> new ResourceNotFoundException("Student with ID " + id + " not found."));
 
             BeanUtils.copyProperties(student, existingStudent);
 
